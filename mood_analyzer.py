@@ -54,6 +54,8 @@ class MoodAnalyzer:
         """
         cleaned = text.strip().lower()
         tokens = cleaned.split()
+        # remove punctuation from tokens
+        tokens = [token for token in tokens if token.isalnum()]
 
         return tokens
 
@@ -75,15 +77,32 @@ class MoodAnalyzer:
           - Give some words higher weights than others (for example "hate" < "annoyed")
           - Treat emojis or slang (":)", "lol", "💀") as strong signals
         """
-        # TODO: Implement this method.
-        #   1. Call self.preprocess(text) to get tokens.
-        #   2. Loop over the tokens.
-        #   3. Increase the score for positive words, decrease for negative words.
-        #   4. Return the total score.
-        #
-        # Hint: if you implement negation, you may want to look at pairs of tokens,
-        # like ("not", "happy") or ("never", "fun").
-        pass
+        pos_count, neg_count = self._sentiment_counts(self.preprocess(text))
+        return pos_count - neg_count
+
+
+    # Generated new helper function to count positive and negative signals with negation handling
+    def _sentiment_counts(self, tokens: List[str]) -> Tuple[int, int]:
+        """
+        Count positive and negative signals in a token list, flipping a
+        word's polarity if it is immediately preceded by a negation word
+        (for example "not happy" counts as negative, "not bad" as positive).
+        """
+        negations = {"not", "no", "never", "n't"}
+
+        pos_count = 0
+        neg_count = 0
+        for i, token in enumerate(tokens):
+            negated = i > 0 and tokens[i - 1] in negations
+
+            if token in self.positive_words:
+                neg_count += 1 if negated else 0
+                pos_count += 0 if negated else 1
+            elif token in self.negative_words:
+                pos_count += 1 if negated else 0
+                neg_count += 0 if negated else 1
+
+        return pos_count, neg_count
 
     # ---------------------------------------------------------------------
     # Label prediction
@@ -98,19 +117,21 @@ class MoodAnalyzer:
           - score < 0  -> "negative"
           - score == 0 -> "neutral"
 
-        TODO: You can adjust this mapping if it makes sense for your model.
-        For example:
-          - Use different thresholds (for example score >= 2 to be "positive")
-          - Add a "mixed" label for scores close to zero
-        Just remember that whatever labels you return should match the labels
-        you use in TRUE_LABELS in dataset.py if you care about accuracy.
+        This implementation adds a fourth label, "mixed", for text that
+        contains both positive and negative signals (for example "tired
+        but hopeful"), regardless of which side the net score leans toward.
+        Text with no sentiment signals at all stays "neutral".
         """
-        # TODO: Implement this method.
-        #   1. Call self.score_text(text) to get the numeric score.
-        #   2. Return "positive" if the score is above 0.
-        #   3. Return "negative" if the score is below 0.
-        #   4. Return "neutral" otherwise.
-        pass
+        pos_count, neg_count = self._sentiment_counts(self.preprocess(text))
+        score = pos_count - neg_count
+
+        if pos_count > 0 and neg_count > 0:
+            return "mixed"
+        if score > 0:
+            return "positive"
+        if score < 0:
+            return "negative"
+        return "neutral"
 
     # ---------------------------------------------------------------------
     # Explanations (optional but recommended)

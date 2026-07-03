@@ -21,15 +21,16 @@ def evaluate_rule_based(posts: List[str], labels: List[str]) -> float:
 
     print("=== Rule Based Evaluation on SAMPLE_POSTS ===")
     for text, true_label in zip(posts, labels):
+        tokens = analyzer.preprocess(text)
+        score = analyzer.score_text(text)
+        reason = analyzer.explain(text)
         predicted_label = analyzer.predict_label(text)
         is_correct = predicted_label == true_label
         if is_correct:
             correct += 1
 
-        # If you implement explain(), you can uncomment these lines:
-        # reason = analyzer.explain(text)
-        # print(f'"{text}" -> predicted={predicted_label}, true={true_label} ({reason})')
-
+        print(f'tokens={tokens}')
+        print(f'score={score} ({reason})')
         print(f'"{text}" -> predicted={predicted_label}, true={true_label}')
 
     if total == 0:
@@ -51,10 +52,12 @@ def run_batch_demo() -> None:
     analyzer = MoodAnalyzer()
     print("\n=== Batch Demo on SAMPLE_POSTS (rule based) ===")
     for text in SAMPLE_POSTS:
+        tokens = analyzer.preprocess(text)
+        score = analyzer.score_text(text)
+        reason = analyzer.explain(text)
         label = analyzer.predict_label(text)
-        # If explain() is implemented, show a short explanation.
-        # reason = analyzer.explain(text)
-        # print(f'"{text}" -> {label} ({reason})')
+        print(f'tokens={tokens}')
+        print(f'score={score} ({reason})')
         print(f'"{text}" -> {label}')
 
 
@@ -75,10 +78,12 @@ def run_interactive_loop() -> None:
             print("Goodbye from the Mood Machine.")
             break
 
+        tokens = analyzer.preprocess(user_input)
+        score = analyzer.score_text(user_input)
+        reason = analyzer.explain(user_input)
         label = analyzer.predict_label(user_input)
-        # If explain() is implemented, you can include an explanation:
-        # reason = analyzer.explain(user_input)
-        # print(f"Model: {label} ({reason})")
+        print(f"tokens={tokens}")
+        print(f"score={score} ({reason})")
         print(f"Model: {label}")
 
 
