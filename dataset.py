@@ -67,6 +67,30 @@ TRUE_LABELS = [
     "negative",  # "I am not happy about this"
 ]
 
+SAMPLE_POSTS.append("lowkey stressed but kind of proud of myself ngl")
+TRUE_LABELS.append("mixed")
+
+SAMPLE_POSTS.append("I absolutely love getting stuck in traffic for two hours 🙃")
+TRUE_LABELS.append("negative")
+
+SAMPLE_POSTS.append("just vibing, nothing special happening today")
+TRUE_LABELS.append("neutral")
+
+SAMPLE_POSTS.append("this test destroyed me but I'm weirdly relieved it's over 😩😌")
+TRUE_LABELS.append("mixed")
+
+SAMPLE_POSTS.append("no cap that concert was the best night of my life!! 🎉😍")
+TRUE_LABELS.append("positive")
+
+SAMPLE_POSTS.append("I'm so done with this week fr fr 💀")
+TRUE_LABELS.append("negative")
+
+SAMPLE_POSTS.append("meh, could've been better could've been worse")
+TRUE_LABELS.append("neutral")
+
+SAMPLE_POSTS.append("crying and laughing at the same time rn, what a day 🥲😂")
+TRUE_LABELS.append("mixed")
+
 # TODO: Add 5-10 more posts and labels.
 #
 # Requirements:
